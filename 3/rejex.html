@@ -1,0 +1,32 @@
+<html>
+<body>
+  <form id="reg" method="post" onsubmit="return validation()">
+    <legend><b>Create an account</b></legend>
+
+    <div class="form-group">
+      <label for="fname">First Name</label>
+      <input type="text" placeholder="Enter your First name" class="form-control" name="fname" id="fname">
+      <span id="fnameerror" class="text-danger font-weight-bold"></span>
+    </div>
+        <div class="form-group">
+      <label for="lname">last name</label>
+      <input type="text" placeholder="Enter your last name" class="form-control" name="lname" id="lname">
+      <span id="lnameerror" class="text-danger font-weight-bold"></span>
+    </div>
+    <div class="form-group">
+      <label for="email">Email id</label>
+      <input type="email" placeholder="Enter your Email-id" class="form-control" name="email" id="email">
+      <span id="mail" class="text-danger font-weight-bold"></span>
+    </div>
+    <div class="form-group">
+      <label for="psw">Password</label>
+      <input type="password" placeholder="Enter Password" class="form-control" id="psw">
+      <span id="pass" class="text-danger font-weight-bold"></span>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-success" id="submit" name="submit">click here</button>
+    </div>
+  </form>
+</body>
+<script src="rejex.js"></script>
+</html>
