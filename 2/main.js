@@ -131,6 +131,5 @@ const usersListGenerator = (index, data) => {
     renderPagination(newUserData);
   };
 
-  const updateUsers = () =>{
-    
-  }
+
+  

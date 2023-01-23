@@ -2,7 +2,7 @@ $(() => {
     $('#reqContainer, #resContainer,#codeCantainer').hide();
     $('#clickBtn').attr('disabled', 'true')
     $('#typeSelect').on({
-        change: function (evenet) {
+        change: function () {
             $('#reqContainer, #resContainer,#codeCantainer').hide();
             $('#clickBtn').attr('disabled', 'true');
 
@@ -16,28 +16,37 @@ $(() => {
             }
         }
     })
-
     $('#clickBtn').on({
-        click: function(event){
-            $.ajax({
-                url: $("#urlInput").val(),
-                type: $("#typeSelect").val(),
-                success : function (res,statusText,Header) {       
-                    console.log(res);
-                    if($("#typeSelect").val()=== 'get') {
+        click: function(){
+            let  url= $("#urlInput").val();
+            let  method= $("#typeSelect").val();
+            if(method == "get"){
+                $.ajax({
+                    url,
+                    method,
+                    success : function(res,statusText,Header){
                         $('#res2').val(JSON.stringify(res, null, 4));
                         $('#resCode').val(`PlainText: ${this.dataTypes} Status ${Header.status}`)
-                    }
-                    else{
+                    },
+                    error: function (Header) {
+                        alert(Header.status);
+                      }
+                })
+            }
+            if(method == "post"){
+                $.ajax({
+                    url,
+                    method,
+                    data: JSON.parse($("#req1").val()),
+                    success : function(res,statusText,Header){
                         $('#req1').val(JSON.stringify(res, null, 4));
                         $('#resCode').val(`PlainText: ${this.dataTypes} Status ${Header.status}`)
                     }
-                },
-                error: function(error){
-                },
-            })
+                })
+            }
         }
     })
+
 })
 
 

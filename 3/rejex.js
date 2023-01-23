@@ -1,13 +1,13 @@
 function validation() {
-  var fname = document.getElementById('fname').value;
-  var lname = document.getElementById('lname').value;
-  var email = document.getElementById('email').value;
-  var psw = document.getElementById('psw').value;
+  const fname = document.getElementById('fname').value;
+  const lname = document.getElementById('lname').value;
+  const email = document.getElementById('email').value;
+  const psw = document.getElementById('psw').value;
 
-  var fnamecheck = /^[A-Za-z. ]{3,30}$/;
-  var lnamecheck = /^[A-Za-z. ]{3,20}$/;
-  var emailcheck = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  var pswcheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  const fnamecheck = /^[A-Za-z. ]{3,30}$/;
+  const lnamecheck = /^[A-Za-z. ]{3,20}$/;
+  const emailcheck = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const pswcheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
   if (fnamecheck.test(fname)) {
     document.getElementById('fnameerror').innerHTML = "";
