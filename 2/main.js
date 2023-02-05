@@ -1,135 +1,89 @@
-const userListContainer = document.getElementById('usersList');
-const userProfileModalTitle = document.getElementById('userProfileModalTitle');
-const userProfileModalBody = document.getElementById('userProfileModalBody');
-const paginationContainer = document.getElementById('paginationContainer');
+$(function () {
+    const cardContainer = $("#cardContainer");
+    const paginationContent = $("#paginationContent")
+    let page = 1
+    let perPage = null;
+    let totalPages=null;
+    let users = []
 
-const  pageDeactive= 'page-link bg-white border-dark text-dark';
-const pageActive = 'page-link bg-primary border-dark text-dark';
-
-let newUserData = userData;
-let selectedUser = null;
-
-const GenerateProfileInformation = ({id, email,avatar,first_name,last_name},showPara = false) => {
-    return `
-    <ul class="list-group list-group-flush my-4">
-        <img src="${avatar}" class="card-img-top p-2 rounded-4" alt='${id}'>
-        <h5 class="list-group-item"><i class="fa-solid fa-user"></i> ${first_name} ${last_name}</h5>
-        ${showPara ? '' :  `<p class="list-group-item">${first_name} ${last_name} is Maktab 45 user by UID of ${id}, you can 
-            easily get in touch with ${first_name} form <br>
-             <span class="text-primary"><a>${email}</a></span>
-            </p>`}
-            <li class="list-group-item"> <i class="fa fa-id-card"></i> ${id}</li>
-            <li class="list-group-item"><i class="fa-solid fa-envelope"></i> ${email}</li>
-    </ul>
-    `
-    }
-
-      const showModalInformation = ({ first_name,...params}) => {
-        const title = `${first_name} Profile`;
-        userProfileModalTitle.innerText = title;
-    
-        const profileInfo = GenerateProfileInformation({first_name,...params },true);
-        userProfileModalBody.innerHTML = profileInfo;
-    }
-
-const cardGenerator = ({id, first_name, last_name, email, avatar}) => {
-    return `            
-    <div class="col-lg-4 col-md-6 col-12">
-    <div class="card shadow">
-        <div class="card-body">
-            ${GenerateProfileInformation({id, email, avatar, first_name, last_name})}
-            <button onclick = 'handelOnClickProfileBtn(${id})' class="btn btn-primary w-100 rounded-3"
-            data-bs-toggle="modal" data-bs-target="#userDataList"
-            >
-            profile
-            </button>
+    const cardGenerator = (user) => {
+        return `     
+       <div class="col-lg-4 col-mg-4 col-sm-6">
+      <div class="card shadow p-2">
+        <img src="${user.avatar}" class="card-img-top" alt="...">
+        <div class="card-body px=0">
+          <h5 class="card-title">${user.first_name} ${user.last_name}</h5>
+          <p class="card-text">
+            <p>UID: ${user.id}</p>
+            <p>Email: ${user.email}</p>
+          </p>
+          <a href="./profile.html?id=${user.id}" class="w-100 btn btn-primary">Show Profile</a>
         </div>
-    </div>
-</div>
-`
-}
+      </div>
+    </div>`
+    }
 
-const handelOnClickProfileBtn = (id) => {
-    const targetUser = userData.find(el => el.id === id);
-    showModalInformation(targetUser);
-}
-
-const usersListGenerator = (index, data) => {
-    let usersListBody = "";
-  
-    for (let i = index; i < index + 6; i++) {
-      if (!data[i]) {
-        break;
-      }
-      usersListBody += cardGenerator(data[i]);
-    }
-    return usersListBody;
-  };
-  
-  const renderUsersList = (index, data) => {
-    userListContainer.innerHTML = usersListGenerator(index, data);
-  };
-  
-  renderUsersList(0, newUserData);
-  
-  /********************************************** */
-  /*********** Pagination Start *********** */
-  
-  // Generate Pagination
-  const paginationGenerator = (data) => {
-    let paginationBody = "";
-    const pageCount = Math.ceil(data.length / 6);
-    let startIndex = 0;
-    for (let i = 0; i < pageCount; i++) {
-      paginationBody += `
-      <li class="page-item">
-        <a
-        class="page-link bg-white border-primary text-dark" 
-          href="#"
-          onclick="pageRender(${startIndex},this)"
-          >${i + 1}</a
-        >
-      </li>`;
-      startIndex += 6;
-    }
-    return paginationBody;
-  };
-  
-  // Render Pagination
-  const renderPagination = (data) => {
-    paginationContainer.innerHTML = paginationGenerator(data);
-    document.querySelectorAll(".page-link")[0].classList = pageActive;
-  };
-  
-  renderPagination(newUserData);
-  
-  // Render Page
-  
-  const pageRender = function (index, self) {
-    let pageBtns = document.querySelectorAll(".page-link");
-    for (const btn of pageBtns) {
-      btn.className = pageDeactive;
-    }
-    self.className = pageActive;
-    renderUsersList(index, newUserData);
-  };
-  
-  /***********************************
-   * Filter Users
-   */
-  
-  const filterUsers = function (self) {
-    const searchKey = self.value.toUpperCase();
-    newUserData = userData.filter((item) => {
-      for (const value of Object.values(item)) {
-        if (value.toString().toUpperCase().indexOf(searchKey) > -1) {
-          return true;
+    const cardsRender = () => {
+        let html = "";
+        for (const user of users) {
+          if (removedUsers.includes(String(user.id))) continue;
+            html += cardGenerator(user)
         }
-      }
-    });
-    renderUsersList(0, newUserData);
-    renderPagination(newUserData);
-  };
+        cardContainer.html(html)
+    }
+
+    this.handelOnclickNewPage = (newPage) =>{
+      page= newPage;
+      requestHandeler(page);
+    }
+
+    const paginationcontentButtons = () => {
+        let html = "";
+        for (let index = 1; index <= totalPages; index++) {
+          html +=  `<li onclick = "handelOnclickNewPage(${index})" class="page-item ${index==page ? "active" : ""}">
+          <a class="page-link">${index}</a></li>`
+        }
+        return html;
+    }
+
+    const paginationContentRenderer = () => {
+        paginationContent.html(
+            `          
+    <li class="page-item">
+    <a class="page-link" href="#" aria-label="Previous">
+      <span aria-hidden="true">&laquo;</span>
+    </a>
+    </li>
+     ${paginationcontentButtons()}
+     <li class="page-item">
+    <a class="page-link" href="#" aria-label="Next">
+      <span aria-hidden="true">&raquo;</span>
+    </a>
+    </li>
+  `
+        )
+
+    }
+
+    const requestHandeler = (page) => {
+        fetch(`https://reqres.in/api/users?page=${page}`,
+            {
+                method: "get"
+            }).then((response) => {
+                return response.json()
+            }).then((body) => {
+                perPage = body.per_page;
+                totalPages = body.total_pages;
+                users = [...body.data];
+                console.log(body);
+                cardsRender();
+                paginationContentRenderer()
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
+    requestHandeler()
+})
 
 
-  
+
